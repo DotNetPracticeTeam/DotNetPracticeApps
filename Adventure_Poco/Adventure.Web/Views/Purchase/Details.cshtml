@@ -1,0 +1,113 @@
+﻿@model Adventure.Web.ViewModel.PurchaseHeaderModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Detail</h2>
+
+
+<fieldset>
+    <legend>Purchase Header</legend>
+
+        <table>
+        <tr>
+        <td>
+                <div class="display-label">OrderDate</div>
+                <div class="display-field">
+                 @Html.DisplayFor(model => model.OrderDate)
+                </div>
+        </td>
+        <td>        
+            <div class="display-label">RevisionNumber</div>
+            <div class="display-field">
+                @Html.DisplayFor(model => model.RevisionNumber)
+            </div>
+        </td>
+        </tr>
+        <tr>
+         <td>
+            <div class="display-label">VendorID</div>
+            <div class="display-field">
+                @Html.DisplayFor(model => model.VendorID)
+            </div>
+
+        </td>
+        <td>
+           <div class="display-label">ShipMethodID</div>
+            <div class="display-field">
+                @Html.DisplayFor(model => model.ShipMethodID)
+            </div>
+        </td>
+        </tr>
+        <tr>
+        <td>
+            <div class="display-label">ShipDate</div>
+            <div class="display-field">
+                @Html.DisplayFor(model => model.ShipDate)
+            </div>
+        </td>
+        <td>
+            <div class="display-label">SubTotal</div>
+            <div class="display-field">
+                @Html.DisplayFor(model => model.SubTotal)
+            </div>
+        </td>
+        </tr>
+        <tr>
+        <td>
+            <div class="display-label">TaxAmt</div>
+            <div class="display-field">
+                @Html.DisplayFor(model => model.TaxAmt)
+            </div>
+        </td>
+
+        <td>
+            <div class="display-label">Freight</div>
+            <div class="display-field">
+                @Html.DisplayFor(model => model.Freight)
+            </div>
+        </td>
+        </tr>
+        </table>
+</fieldset>
+<fieldset>
+<legend>Items</legend>
+
+       <table class="tbl" id="tbl">
+       <thead>
+       <tr>
+       <th>Product ID</th> <th>Quantity</th><th>Unit Price</th>
+       </tr>
+       </thead>
+       
+       <tbody>
+       @if (Model != null)
+       {
+           foreach (var item in Model.purchasedetailmodel)
+           { 
+           <tr>
+           <td>
+           @Html.DisplayTextFor(i => item.ProductID)
+           </td>
+           <td>
+           @Html.DisplayTextFor(i => item.OrderQty)
+           </td>
+           <td>
+           @Html.DisplayTextFor(i => item.UnitPrice)
+           </td>
+           </tr>
+           }
+       }
+       
+       </tbody>
+       
+       </table>
+       <br />
+</fieldset>
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Edit" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

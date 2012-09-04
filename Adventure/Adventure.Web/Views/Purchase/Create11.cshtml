@@ -1,0 +1,347 @@
+﻿@model Adventure.Web.ViewModel.PurchaseHeaderModel
+
+
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+
+<h2 class="h2">@ViewBag.Title</h2>
+
+
+   @if (false)
+{   <script src="../../Scripts/jquery-1.5.1-vsdoc.js" type="text/javascript"></script>}
+ 
+
+<script type="text/javascript" defer="defer">
+    $(document).ready(function () {
+
+        // here i have used datatables.js (jQuery Data Table)
+        $('.tbl').dataTable({
+            "sDom": 'T<"clear">lfrtip',
+            "oTableTools": {
+
+                "aButtons": [],
+                "sRowSelect": "single"
+            },
+            "bLengthChange": false,
+            "bFilter": false,
+            "bSort": false,
+            "bInfo": false
+        });
+
+
+        var oTable = $('.tbl').dataTable();
+    });
+    $(document).ready(function () {
+
+        $('#OrderDate').datepicker();
+
+        $('#ShipDate').datepicker();
+
+    });
+
+
+
+
+    $("#PurcSave").click(function () {
+   
+        Purchase_save();
+    });
+
+
+    // This function is used fro 
+    // delete selected row from Detail Table
+    // set deleted item to Edit text Boxes
+    function DeleteRow() {
+    
+        // Here I have used DataTables.TableTools plugin for getting selected row items
+        var oTT = TableTools.fnGetInstance('tbl'); // Get Table instance
+        var sRow = oTT.fnGetSelected(); // Get Selected Item From Table
+
+
+        // Set deleted row item to editable text boxes
+        $('#ProductID').val($.trim(sRow[0].cells[0].innerHTML.toString()));
+        $('#OrderQty').val(jQuery.trim(sRow[0].cells[1].innerHTML.toString()));
+        $('#UnitPrice').val($.trim(sRow[0].cells[2].innerHTML.toString()));
+
+        
+        $('.tbl').dataTable().fnDeleteRow(sRow[0]);
+
+    }
+
+
+    // this function is used to add item to list table
+    function Add() {
+
+        // Adding item to table
+        $('.tbl').dataTable().fnAddData([$('#ProductID').val(), $('#OrderQty').val(), $('#UnitPrice').val()]);
+
+        //$('#DueDate').val(), $('#LineTotal').val()
+
+        // Making Editable text empty
+        $('#ProductID').val("")
+        $('#OrderQty').val("")
+        $('#UnitPrice').val("")
+
+
+
+    }
+
+
+
+    //This function is used for sending data(JSON Data) to PurchaseController
+    function Purchase_save() {
+        // Step 1: Read View Data and Create JSON Object
+        // Creating PurchaseDetail Json Object
+        var purcdetail = { "PurchaseOrderID": "", "ProductID": "", "OrderQty": "", "UnitPrice": ""};
+
+
+        // Creating PurchaseHeader Json Object
+        var purcheader = { "PurchaseOrderID": "", "OrderDate": "", "RevisionNumber": "", "EmployeeID": "", "Status": "", "VendorID": "", "ShipMethodID": "", "ShipDate": "", "SubTotal": "", "TaxAmt": "", "Freight": "", "ModifiedDate": "", "purchasedetailmodel": [] };
+
+        //var purcmodel = { "PurchaseHeaderModel": [], "PurchaseDetailModel": []};
+
+
+
+        // Set Purchase Header Value
+        purcheader.PurchaseOrderID = $("#PurchaseOrderID").val();
+        purcheader.OrderDate= $("#OrderDate").val();
+        purcheader.RevisionNumber = $("#RevisionNumber").val();
+        purcheader.EmployeeID = $("#EmployeeID").val();
+        purcheader.Status = $("#Status").val();
+        purcheader.VendorID = $("#VendorID").val();
+        purcheader.ShipMethodID = $("#ShipMethodID").val();
+        purcheader.ShipDate = $("#ShipDate").val();
+        purcheader.SubTotal = $("#SubTotal").val();
+        purcheader.TaxAmt = $("#TaxAmt").val();
+        purcheader.Freight = $("#Freight").val();
+        purcheader.ModifiedDate = $("#ModifiedDate").val();
+
+
+        // Getting Table Data from where we will fetch Sales Sub Record
+        var oTable = $('.tbl').dataTable().fnGetData();
+
+
+
+        for (var i = 0; i < oTable.length; i++) {
+
+            // IF This view is for edit then it will read PurchaseOrderID from Hidden field
+            if ($('h2').text() == "Edit") {
+                purcdetail.PurchaseOrderID = $('#PurchaseOrderID').val();
+            }
+            else {
+                purcdetail.PurchaseOrderID= 0;
+            }
+
+            // Set PurchaseDetail individual Value
+            purcdetail.ProductID = oTable[i][0];
+            purcdetail.OrderQty = oTable[i][1];
+            purcdetail.UnitPrice = oTable[i][2];
+            //purcdetail.DueDate = oTable[i][3];
+            //purcdetail.LineTotal = oTable[i][4];
+            // adding to PurchaseHeader.PurchaseDetail List Item
+            purcheader.purchasedetailmodel.push(purcdetail);
+            purcdetail = { "ProductID": "", "OrderQty": "", "UnitPrice": ""};
+
+
+        }
+        // Step 1: Ends Here
+
+
+
+        // Set 2: Ajax Post
+        // Here i have used ajax post for saving/updating information
+        $.ajax({
+            url: '/Purchase/Create',
+            data:JSON.stringify(purcheader),
+            type: 'POST',
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (result) {
+
+                if (result.Success == "1") {
+                    window.location.href = "/Purchase/index";
+                }
+                else {
+                    alert(result.ex);
+                }
+            }
+        });
+
+
+    }
+
+</script>
+
+
+
+
+
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Purchase Header</legend>
+            
+           @if (Model != null)
+           { 
+               <input type="hidden" id = "PurchaseOrderID" name ="PurchaseOrderID" value = "@Model.PurchaseOrderID" />
+           }
+        <input type="hidden" id = "EmployeeID" name ="EmployeeID" value = "@Model.EmployeeID" />
+        <input type="hidden" id = "Status" name ="Status" value = "@Model.Status" />
+        <input type="hidden" id = "ModifiedDate" name ="ModifiedDate" value = "@Model.ModifiedDate" />
+        <table>
+        <tr><td>
+          <div class="editor-label">
+            @Html.LabelFor(model => model.PurchaseOrderID)
+        </div>
+        <div class="editor-field">
+            @Html.DisplayFor(model => model.PurchaseOrderID)
+        </div>
+
+        </td></tr>
+        <tr>
+        <td>
+          <div class="editor-label">
+            @Html.LabelFor(model => model.OrderDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.OrderDate,null,"OrderDate")
+            @Html.ValidationMessageFor(model => model.OrderDate)
+        </div>
+        </td>
+        <td>        
+            <div class="editor-label">
+                @Html.LabelFor(model => model.RevisionNumber)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.RevisionNumber,null,"RevisionNumber")
+                @Html.ValidationMessageFor(model => model.RevisionNumber)
+            </div>
+        </td>
+        </tr>
+        <tr>
+         <td>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.VendorID)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.VendorID,null,"VendorID")
+            @Html.ValidationMessageFor(model => model.VendorID)
+        </div>
+        </td>
+        <td>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ShipMethodID)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ShipMethodID,null,"ShipMethodID")
+            @Html.ValidationMessageFor(model => model.ShipMethodID)
+        </div>
+        </td>
+        </tr>
+        <tr>
+        <td>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ShipDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ShipDate,null,"ShipDate")
+            @Html.ValidationMessageFor(model => model.ShipDate)
+        </div>
+        </td>
+
+        <td>
+         <div class="editor-label">
+            @Html.LabelFor(model => model.SubTotal)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SubTotal,null,"SubTotal")
+            @Html.ValidationMessageFor(model => model.SubTotal)
+        </div>
+        </td>
+        </tr>
+        <tr>
+        <td>
+         <div class="editor-label">
+            @Html.LabelFor(model => model.TaxAmt)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.TaxAmt,null,"TaxAmt")
+            @Html.ValidationMessageFor(model => model.TaxAmt)
+        </div>
+        </td>
+
+        <td>
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Freight)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Freight, null, "Freight")
+                @Html.ValidationMessageFor(model => model.Freight)
+        </div>
+        </td>
+        </tr>
+        </table>
+        <div>
+            @*@Html.Partial("PurchaseCreateDetail", Model.purchasedetailmodel);*@
+  <fieldset>
+    @Html.ValidationSummary(true)
+
+     <legend>Add Item</legend>
+
+        <label>Product ID :</label>
+        @Html.TextBox("ProductID")
+
+
+        <label>Order Qty :</label>
+        @Html.TextBox("OrderQty")
+        <label>Unit Price:</label>
+        @Html.TextBox("UnitPrice")
+
+        <input type="button" value= "Add" onclick="Add()" />
+        
+       <table class="tbl" id="tbl">
+       <thead>
+       <tr>
+       <th>Product ID</th> <th>Quantity</th><th>Unit Price</th>
+       </tr>
+       </thead>
+       
+       <tbody>
+       @if (Model.purchasedetailmodel != null)
+       {
+           foreach (var item in Model.purchasedetailmodel)
+           { 
+           <tr>
+           <td>
+           @Html.DisplayTextFor(i => item.ProductID)
+           </td>
+           <td>
+           @Html.DisplayTextFor(i => item.OrderQty)
+           </td>
+           <td>
+           @Html.DisplayTextFor(i => item.UnitPrice)
+           </td>
+            </tr>
+                                 
+           }
+       }
+       
+       </tbody>
+       
+       </table>
+       <div>
+
+       </div>
+       <br />
+       <input type="button" value="Delete Selected Row" onclick="DeleteRow()" />
+    </fieldset>           
+        </div>
+    </fieldset>
+    <p>
+    <input type="button" id="PurcSave" value="Purchase Save" />|
+    @Html.ActionLink("Back to List", "Index")
+    </p>
+}
+

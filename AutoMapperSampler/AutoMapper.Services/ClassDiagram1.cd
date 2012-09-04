@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Alphabetical" MembersFormat="NameAndType">
+  <Class Name="Pubs.Services.Entities.Author">
+    <Position X="8.25" Y="8" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAEAABAAAAAAIAAAACAAAAAAAAAACAAAIJAAAAAg=</HashCode>
+      <FileName>Entities\Author.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pubs.Services.Entities.Employee">
+    <Position X="3.25" Y="5" Width="1.5" />
+    <Members>
+      <Property Name="HireDate" Hidden="true" />
+      <Property Name="JobLevel" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAASAEAAAAAAAAAAAAAAAAoAASAACAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Entities\Employee.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="job" />
+      <Property Name="publisher" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Pubs.Services.Entities.TitleAuthor" Collapsed="true">
+    <Position X="11.5" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAEAAAAAIAAAAAAAAAAABEAAAIAAAA=</HashCode>
+      <FileName>Entities\TitleAuthor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pubs.Services.Entities.Title">
+    <Position X="3" Y="2.25" Width="1.5" />
+    <Members>
+      <Property Name="Advance" Hidden="true" />
+      <Property Name="Id" Hidden="true" />
+      <Property Name="Notes" Hidden="true" />
+      <Property Name="Price" Hidden="true" />
+      <Property Name="PublishDate" Hidden="true" />
+      <Property Name="PublisherId" Hidden="true" />
+      <Property Name="Royalty" Hidden="true" />
+      <Property Name="Type" Hidden="true" />
+      <Property Name="YTDSales" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAiAAAIBQAAIAAECAAAAAQAAQIAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Entities\Title.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pubs.Services.Entities.Publisher">
+    <Position X="5.75" Y="5" Width="2.5" />
+    <Members>
+      <Property Name="City" Hidden="true" />
+      <Property Name="Country" Hidden="true" />
+      <Property Name="State" Hidden="true" />
+      <Property Name="Titles" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAEAIAAAAAAQACAIAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Entities\Publisher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pubs.Services.Entities.Store">
+    <Position X="3" Y="0.5" Width="1.5" />
+    <Members>
+      <Property Name="Address" Hidden="true" />
+      <Property Name="Id" Hidden="true" />
+      <Property Name="State" Hidden="true" />
+      <Property Name="Zip" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAIAAAADAQAAAAAAAACAAAABAAAAAA=</HashCode>
+      <FileName>Entities\Store.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pubs.Services.Entities.Sale">
+    <Position X="0.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAIAQAAABAAEAAAAEAAAAAAAAAABAAAAgAAAAAA=</HashCode>
+      <FileName>Entities\Sale.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="title" />
+      <Property Name="store" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Pubs.Services.Entities.Job">
+    <Position X="0.5" Y="5" Width="2" />
+    <Members>
+      <Property Name="MaxLevel" Hidden="true" />
+      <Property Name="MinLevel" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAgAAAAAAAIAAAAAAAAAAAAAAAABAAAAEA=</HashCode>
+      <FileName>Entities\Job.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

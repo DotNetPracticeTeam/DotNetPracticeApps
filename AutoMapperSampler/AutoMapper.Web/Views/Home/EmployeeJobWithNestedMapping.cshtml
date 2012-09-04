@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Pubs.Web.Models.JobModel>
+
+@{
+   // ViewBag.Title = "EmployeeJobWithNestedMapping";
+}
+
+<h2>@ViewBag.Title</h2>
+<div style="margin-bottom:5px;"> <img src="@Url.Content("~/Content/Image/NestedMapping.JPG")" alt="AuthorClass" />  </div>
+
+<table>
+    <tr>
+        <th>
+            <h3>Job Description with Employee Mapping</h3>
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            <h3 style="background-color:ActiveBorder">@Html.DisplayFor(modelItem => item.Description)</h3>
+            <table>
+            <tr>
+                <th>
+                    <h3>Employee</h3>
+                </th>
+                <th>
+                    <h3>Publisher</h3>
+                </th>
+            </tr>
+            @foreach (var emp in item.employees)
+            {
+               <tr>
+               <td>@Html.DisplayFor(modelItem => emp.EmployeeName)</td>
+               <td>@Html.DisplayFor(modelItem => emp.publisherName)</td>
+               </tr>
+            }    
+            </table>                
+        </td>
+    </tr>
+}
+
+</table>
+<pre class="pre1">
+<h5 style="color:Green;">Automapper Mapping required</h5>
+Mapper.CreateMap&lt;Job, JobModel&gt;();
+Mapper.CreateMap&lt;Employee, EmployeeModel>()
+        .ForMember(dest =&gt; dest.EmployeeName, opt =&gt; opt.MapFrom(src =&gt; src.FirstName + ' ' + src.LastName));
+            
+<h5 style="color:Green;">Transforming object</h5>
+    var model = Mapper.Map&lt;IEnumerable&lt;Job&gt;, IEnumerable&lt;JobModel&gt;&gt;(_pubservices.GetEmployeeJobMapping());
+</pre>

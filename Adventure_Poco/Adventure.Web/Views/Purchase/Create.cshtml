@@ -1,0 +1,452 @@
+﻿@model Adventure.Web.ViewModel.PurchaseHeaderModel
+
+
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+
+<h2 class="h2">@ViewBag.Title</h2>
+
+
+   @if (false)
+{   <script src="../../Scripts/jquery-1.5.1-vsdoc.js" type="text/javascript"></script>}
+
+
+
+<script type="text/javascript" defer="defer">
+
+
+
+    $(document).ready(function () {
+
+        // here i have used datatables.js (jQuery Data Table)
+        $('.tbl').dataTable({
+            "sDom": 'T<"clear">lfrtip',
+            "oTableTools": {
+
+                "aButtons": [],
+                "sRowSelect": "single"
+            },
+            "bLengthChange": false,
+            "bFilter": false,
+            "bSort": false,
+            "bInfo": false
+        });
+
+       // $('#OrderDate').datepicker();
+        //$('#ShipDate').datepicker();
+
+        var oTable = $('.tbl').dataTable();
+    });
+
+    $(document).ready(function () {
+
+         $('#OrderDate').datepicker();
+        $('#ShipDate').datepicker();
+
+
+    });
+
+    $("#PurcSave").click(function () {
+
+
+//        alert($("#ShipMethodID").val());
+//        alert($("#OrderDate").val());
+//        alert($("#RevisionNumber").val());
+
+        Purchase_save();
+    });
+
+
+    // This function is used fro 
+    // delete selected row from Detail Table
+    // set deleted item to Edit text Boxes
+    function DeleteRow() {
+    
+        // Here I have used DataTables.TableTools plugin for getting selected row items
+        var oTT = TableTools.fnGetInstance('tbl'); // Get Table instance
+        var sRow = oTT.fnGetSelected(); // Get Selected Item From Table
+
+        if (sRow[0] != undefined) {
+            // Set deleted row item to editable text boxes
+            $('#ProductID').val($.trim(sRow[0].cells[0].innerHTML.toString()));
+            $('#OrderQty').val(jQuery.trim(sRow[0].cells[1].innerHTML.toString()));
+            $('#UnitPrice').val($.trim(sRow[0].cells[2].innerHTML.toString()));
+
+
+            $('.tbl').dataTable().fnDeleteRow(sRow[0]);
+        }
+        else {
+            alert('Please select a row first');
+        }
+    }
+
+
+    // this function is used to add item to list table
+    function Add() {
+
+        // Adding item to table
+        $('.tbl').dataTable().fnAddData([$('#ProductID').val(), $('#OrderQty').val(), $('#UnitPrice').val()]);
+
+        //$('#DueDate').val(), $('#LineTotal').val()
+
+        // Making Editable text empty
+        $('#ProductID').val("")
+        $('#OrderQty').val("")
+        $('#UnitPrice').val("")
+
+
+
+    }
+
+
+
+    //This function is used for sending data(JSON Data) to PurchaseController
+    function Purchase_save() {
+        // Step 1: Read View Data and Create JSON Object
+        //alert("hello...");
+        // Creating PurchaseDetail Json Object
+        var purcdetail = { "PurchaseOrderID": "", "ProductID": "", "OrderQty": "", "UnitPrice": ""};
+
+
+        // Creating PurchaseHeader Json Object
+        var purcheader = { "PurchaseOrderID": "", "OrderDate": "", "RevisionNumber": "", "EmployeeID": "", "Status": "", "VendorID": "", "ShipMethodID": "", "ShipDate": "", "SubTotal": "", "TaxAmt": "", "Freight": "", "ModifiedDate": "", "purchasedetailmodel": [] };
+
+        //var purcmodel = { "PurchaseHeaderModel": [], "PurchaseDetailModel": []};
+
+
+
+        // Set Purchase Header Value
+        purcheader.PurchaseOrderID = $("#PurchaseOrderID").val();
+        purcheader.OrderDate= $("#OrderDate").val();
+        purcheader.RevisionNumber = $("#RevisionNumber").val();
+        purcheader.EmployeeID = $("#EmployeeID").val();
+        purcheader.Status = $("#Status").val();
+        purcheader.VendorID = $("#VendorID").val();
+        purcheader.ShipMethodID = $("#ShipMethodID").val();
+        purcheader.ShipDate = $("#ShipDate").val();
+        purcheader.SubTotal = $("#SubTotal").val();
+        purcheader.TaxAmt = $("#TaxAmt").val();
+        purcheader.Freight = $("#Freight").val();
+        purcheader.ModifiedDate = $("#ModifiedDate").val();
+
+
+        // Getting Table Data from where we will fetch Sales Sub Record
+        var oTable = $('.tbl').dataTable().fnGetData();
+
+
+
+        for (var i = 0; i < oTable.length; i++) {
+
+            // IF This view is for edit then it will read PurchaseOrderID from Hidden field
+            if ($('h2').text() == "Edit") {
+                purcdetail.PurchaseOrderID = $('#PurchaseOrderID').val();
+            }
+            else {
+                purcdetail.PurchaseOrderID= 0;
+            }
+
+            // Set PurchaseDetail individual Value
+            purcdetail.ProductID = oTable[i][0];
+            purcdetail.OrderQty = oTable[i][1];
+            purcdetail.UnitPrice = oTable[i][2];
+            //purcdetail.DueDate = oTable[i][3];
+            //purcdetail.LineTotal = oTable[i][4];
+            // adding to PurchaseHeader.PurchaseDetail List Item
+            purcheader.purchasedetailmodel.push(purcdetail);
+            purcdetail = { "ProductID": "", "OrderQty": "", "UnitPrice": ""};
+
+
+        }
+        // Step 1: Ends Here
+
+
+
+        // Set 2: Ajax Post
+        // Here i have used ajax post for saving/updating information
+        $.ajax({
+            url: '/Purchase/Create',
+            data:JSON.stringify(purcheader),
+            type: 'POST',
+            contentType: 'application/json;',
+            dataType: 'json',
+            success: function (result) {
+
+                if (result.Success == "1") {
+                    window.location.href = "/Purchase/index";
+                }
+                else {
+                   alert(result.ex);
+                }
+            }
+        });
+
+
+   }
+
+   function restoreRow(oTable, nRow) {
+       var aData = oTable.fnGetData(nRow);
+       var jqTds = $('>td', nRow);
+
+       for (var i = 0, iLen = jqTds.length; i < iLen; i++) {
+           oTable.fnUpdate(aData[i], nRow, i, false);
+       }
+
+       oTable.fnDraw();
+   }
+
+
+    function editRow(oTable, nRow) { var aData = oTable.fnGetData(nRow); var jqTds = $('>td', nRow); jqTds[0].innerHTML = '<INPUT value="' + aData[0] + '" type=text>'; jqTds[1].innerHTML = '<INPUT value="' + aData[1] + '" type=text>'; jqTds[2].innerHTML = '<INPUT value="' + aData[2] + '" type=text>'; jqTds[3].innerHTML = '<A class=edit href="">Save</A>'; }
+    function saveRow(oTable, nRow) { var jqInputs = $('input', nRow); oTable.fnUpdate(jqInputs[0].value, nRow, 0, false); oTable.fnUpdate(jqInputs[1].value, nRow, 1, false); oTable.fnUpdate(jqInputs[2].value, nRow, 2, false);oTable.fnUpdate('<A class=edit href="">Edit</A>', nRow, 3, false); oTable.fnDraw(); }
+//    $(document).ready(function () { var oTable = $('#tbl').dataTable(); var nEditing = null; $('#tbl a.edit').live('click', function (e) { e.preventDefault();                   /* Get the row as a parent of the link that was clicked on */var nRow = $(this).parents('tr')[0]; if (nEditing !== null && nEditing != nRow) {             /* A different row is being edited - the edit should be cancelled and this row edited */restoreRow(oTable, nEditing); editRow(oTable, nRow); nEditing = nRow; } else if (nEditing == nRow && this.innerHTML == "Save") {             /* This row is being edited and should be saved */saveRow(oTable, nEditing); nEditing = null; } else {             /* No row currently being edited */editRow(oTable, nRow); nEditing = nRow; } }); });
+//    //$('#tbl a.delete').live('click', function (e) { e.preventDefault(); var nRow = $(this).parents('tr')[0]; oTable.fnDeleteRow(nRow); }); 
+//    $('#new').click(function (e) { e.preventDefault(); var aiNew = oTable.fnAddData(['', '', '', '', '', '<A class=edit href="">Edit</A>', '<A class=delete href="">Delete</A>']); var nRow = oTable.fnGetNodes(aiNew[0]); editRow(oTable, nRow); nEditing = nRow; }); 
+    $(document).ready(function () {
+        var oTable = $('#tbl').dataTable();
+        var nEditing = null;
+
+        $('#new').click(function (e) {
+            e.preventDefault();
+
+            var aiNew = oTable.fnAddData(['', '', '','<a class="edit" href="">Edit</a>', '<a class="delete" href="">Delete</a>']);
+            var nRow = oTable.fnGetNodes(aiNew[0]);
+            editRow(oTable, nRow);
+            nEditing = nRow;
+        });
+
+        $('#tbl a.delete').live('click', function (e) {
+            e.preventDefault();
+
+            var nRow = $(this).parents('tr')[0];
+            oTable.fnDeleteRow(nRow);
+        });
+
+        $('#tbl a.edit').live('click', function (e) {
+            e.preventDefault();
+
+            /* Get the row as a parent of the link that was clicked on */
+            var nRow = $(this).parents('tr')[0];
+
+            if (nEditing !== null && nEditing != nRow) {
+                /* Currently editing - but not this row - restore the old before continuing to edit mode */
+                restoreRow(oTable, nEditing);
+                editRow(oTable, nRow);
+                nEditing = nRow;
+            }
+            else if (nEditing == nRow && this.innerHTML == "Save") {
+                /* Editing this row and want to save it */
+                saveRow(oTable, nEditing);
+                nEditing = null;
+            }
+            else {
+                /* No edit in progress - let's start one */
+                editRow(oTable, nRow);
+                nEditing = nRow;
+            }
+        });
+    });
+</script>
+
+
+
+
+
+
+@using (Html.BeginForm("Purchase", "Home", FormMethod.Post, new { id = "registerForm" }))
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Purchase Header</legend>
+            
+           @if (Model != null)
+           { 
+               <input type="hidden" id = "PurchaseOrderID" name ="PurchaseOrderID" value = "@Model.PurchaseOrderID" />
+           }
+        <input type="hidden" id = "EmployeeID" name ="EmployeeID" value = "@Model.EmployeeID" />
+        <input type="hidden" id = "Status" name ="Status" value = "@Model.Status" />
+        <input type="hidden" id = "ModifiedDate" name ="ModifiedDate" value = "@Model.ModifiedDate" />
+        <table>
+        <tr><td>
+          <div class="editor-label">
+            @Html.LabelFor(model => model.PurchaseOrderID)
+        </div>
+        <div class="editor-field">
+            @Html.DisplayFor(model => model.PurchaseOrderID)
+        </div>
+
+        </td></tr>
+        <tr>
+        <td>
+          <div class="editor-label">
+            @Html.LabelFor(model => model.OrderDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.OrderDate,null,"OrderDate")
+            @Html.ValidationMessageFor(model => model.OrderDate)
+        </div>
+        </td>
+        <td>        
+            <div class="editor-label">
+                @Html.LabelFor(model => model.RevisionNumber)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.RevisionNumber,null,"RevisionNumber")
+                @Html.ValidationMessageFor(model => model.RevisionNumber)
+
+
+
+            </div>
+        </td>
+        </tr>
+        <tr>
+         <td>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.VendorID)
+        </div>
+        <div class="editor-field">
+          @*  @Html.EditorFor(model => model.VendorID,null,"VendorID")
+            @Html.ValidationMessageFor(model => model.VendorID)*@
+
+            @* Html.DropDownListFor(model =>model.VendorList (SelectList)ViewBag.BusinessEntityID, "VendorID") *@
+            @Html.DropDownListFor(model => model.VendorID ,Model.VendorList)
+
+
+
+
+
+@*
+             @Html.DropDownListFor(model => model.VendorList,
+new SelectList(Model.VendorList, "VendorID", "Name"), 
+        new { id = "quantityList" })
+*@
+
+        </div> 
+        </td>
+        <td>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ShipMethodID)
+        </div>
+        <div class="editor-field">
+           @* @Html.EditorFor(model => model.ShipMethodID,null,"ShipMethodID")
+            @Html.ValidationMessageFor(model => model.ShipMethodID)*@
+              @Html.DropDownListFor(model => model.ShipMethodID, Model.ShipMethodList)
+        </div>
+        </td>
+        </tr>
+        <tr>
+        <td>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ShipDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ShipDate,null,"ShipDate")
+            @Html.ValidationMessageFor(model => model.ShipDate)
+        </div>
+        </td>
+
+        <td>
+         <div class="editor-label">
+            @Html.LabelFor(model => model.SubTotal)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SubTotal,null,"SubTotal")
+            @Html.ValidationMessageFor(model => model.SubTotal)
+        </div>
+        </td>
+        </tr>
+        <tr>
+        <td>
+         <div class="editor-label">
+            @Html.LabelFor(model => model.TaxAmt)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.TaxAmt,null,"TaxAmt")
+            @Html.ValidationMessageFor(model => model.TaxAmt)
+        </div>
+        </td>
+
+        <td>
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Freight)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Freight, null, "Freight")
+                @Html.ValidationMessageFor(model => model.Freight)
+        </div>
+        </td>
+        </tr>
+        </table>
+        <div>
+            @*@Html.Partial("PurchaseCreateDetail", Model.purchasedetailmodel);*@
+  <fieldset>
+    @Html.ValidationSummary(true)
+
+     <legend>Add Item</legend>
+     <a href="" id="new">Add new row</a>
+      @*  <label>Product ID :</label>
+        @Html.TextBox("ProductID")
+
+
+        <label>Order Qty :</label>
+        @Html.TextBox("OrderQty")
+        <label>Unit Price:</label>
+        @Html.TextBox("UnitPrice")
+
+        <input type="button" value= "Add" onclick="Add()" />*@
+        
+       <table class="tbl" id="tbl">
+       <thead>
+       <tr>
+       <th>Product ID</th> <th>Quantity</th><th>Unit Price</th> <th>Edit</th>             <th>Delete</th> 
+       </tr>
+       </thead>
+       
+       <tbody>
+       @if (Model.purchasedetailmodel != null)
+       {
+           foreach (var item in Model.purchasedetailmodel)
+           { 
+           <tr>
+           <td>
+           @Html.DisplayTextFor(i => item.ProductID)
+           </td>
+           <td>
+           @Html.DisplayTextFor(i => item.OrderQty)
+           </td>
+           <td>
+           @Html.DisplayTextFor(i => item.UnitPrice)
+           </td>    <td><a class="edit" href="">Edit</a></td>             <td><a class="delete" href="Javascript:DeleteRow();">Delete</a></td> 
+            </tr>
+                                 
+           }
+       }
+       
+       </tbody>
+       
+       </table>
+       <div>
+
+       </div>
+       <br />
+     @*  <input type="button" value="Delete Selected Row" onclick="DeleteRow()" />*@
+    </fieldset>           
+        </div>
+    </fieldset>
+    <p>
+    <input type="button" id="PurcSave" value="Purchase Save" />|
+    @Html.ActionLink("Back to List", "Index")
+    </p>
+     
+
+    <script type="text/javascript">
+// validate the form on submit
+    $("#registerForm").validate();
+
+    $("#RevisionNumber").rules("add", { number: true, required: true, messages: { number: "Please enter a valid number.", required: "RevisionNumber required"} });
+		$("#OrderDate").rules("add", { required: true, date: true, messages: { required: "Date required", date: "Please enter a valid date."} });
+		$("#ShipDate").rules("add", { required: true, date: true, messages: { required: "Date required", date: "Please enter a valid date."} });
+		$("#SubTotal").rules("add", { number: true, required: true, messages: { required: "Sub Total required", date: "Please enter a valid Sub Total."} });
+		$("#TaxAmt").rules("add", { number: true, required: true, messages: { required: "TaxAmt required", date: "Please enter a valid TaxAmt."} });
+		$("#Freight").rules("add", { number: true, required: true, messages: { required: "Freight required", date: "Please enter a valid Freight."} });
+        </script>
+}
+ 

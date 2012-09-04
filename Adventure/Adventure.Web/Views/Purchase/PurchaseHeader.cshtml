@@ -1,0 +1,69 @@
+﻿@model Adventure.Web.ViewModel.PurchaseHeaderModel
+
+<fieldset>
+    <legend>PurchaseHeaderModel</legend>
+
+    <div class="display-label">PurchaseOrderID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PurchaseOrderID)
+    </div>
+
+    <div class="display-label">RevisionNumber</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.RevisionNumber)
+    </div>
+
+    <div class="display-label">Status</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Status)
+    </div>
+
+    <div class="display-label">EmployeeID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.EmployeeID)
+    </div>
+
+    <div class="display-label">VendorID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.VendorID)
+    </div>
+
+    <div class="display-label">ShipMethodID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ShipMethodID)
+    </div>
+
+    <div class="display-label">OrderDate</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OrderDate)
+    </div>
+
+    <div class="display-label">ShipDate</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ShipDate)
+    </div>
+
+    <div class="display-label">SubTotal</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SubTotal)
+    </div>
+
+    <div class="display-label">TaxAmt</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.TaxAmt)
+    </div>
+
+    <div class="display-label">Freight</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Freight)
+    </div>
+
+    <div class="display-label">ModifiedDate</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ModifiedDate)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { /* id=Model.PrimaryKey */ }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

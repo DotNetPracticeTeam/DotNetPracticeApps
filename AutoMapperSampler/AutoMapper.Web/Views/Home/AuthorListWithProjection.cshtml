@@ -1,0 +1,125 @@
+﻿@model IEnumerable<Pubs.Web.Models.AuthorProjectionModel>
+
+@{
+    //ViewBag.Title = "Author List With Projection";
+}
+
+<h2>@ViewBag.Title</h2>
+@if (ViewBag.ViewType == "PROJECTION")
+{<pre class="pre2">
+Projection transforms a source to a destination beyond flattening the object model. When you want to project source values into a destination that does not exactly match the source structure, you must specify custom member mapping definitions
+</pre>
+}
+@{string conditionvalue = ViewBag.ViewType;}
+@if (conditionvalue.StartsWith("RESOLVE"))
+{<pre class="pre2">
+AutoMapper allows for configuring custom value resolvers for destination members. For example, we might want to have a calculated value just during mapping
+</pre>
+}
+<div style="margin-bottom:5px;"> <img src="@Url.Content("~/Content/Image/Projection.JPG")" alt="AuthorClass" />  </div>
+
+
+<table>
+    <tr>
+        <th>
+            AuthorName
+        </th>
+        <th>
+            Phone
+        </th>
+        <th>
+            City
+        </th>
+        <th>
+            State
+        </th>
+        
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.AuthorName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Phone)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.City)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.State)
+        </td>
+    </tr>
+}
+
+</table>
+@if (ViewBag.ViewType == "PROJECTION")
+{   <pre class="pre1">
+    <h5 style="color:Green;">Automapper Mapping required</h5>
+     Mapper.CreateMap&lt;Author, AuthorProjectionModel&gt;()
+                    .ForMember(dest =&gt; dest.AuthorName, opt =&gt; opt.MapFrom(src =&gt; src.FirstName + ' ' + src.LastName));
+     <h5 style="color:Green;">Transforming object</h5>
+     var model = Mapper.Map&lt;IEnumerable&lt;Author&gt;, IEnumerable&lt;AuthorProjectionModel&gt;&gt;(_pubservices.GetAuthors());
+
+     </pre>
+}
+@if (ViewBag.ViewType == "RESOLVE1")
+{    <pre class="pre1">
+    <h5 style="color:Green;">Automapper Mapping required</h5>
+    ResolveUsing with Passing Type and Automapper will create Instance and use it at runtime. 
+    Mapper.CreateMap&lt;Author, AuthorProjectionModel&gt;()
+                        .ForMember(dest =&gt; dest.AuthorName, opt =&gt; opt.ResolveUsing&lt;AuthorNameResolver&gt;());
+    <h5 style="color:Green;">Transforming object</h5>
+    var model = Mapper.Map&lt;IEnumerable&lt;Author&gt;, IEnumerable&lt;AuthorProjectionModel&gt;&gt;(_pubservices.GetAuthors()); 
+    <h5 style="color:Green;">Implementation of ValueResolver</h5>
+    public class AuthorNameResolver : ValueResolver&lt;Author, string&gt;
+    {
+        protected override string ResolveCore(Author source)
+        {
+            return source.FirstName + " " + source.LastName;
+        }
+    }
+    </pre>
+}
+@if (ViewBag.ViewType == "RESOLVE2")
+{
+    <pre class="pre1">
+    <h5 style="color:Green;">Automapper Mapping required</h5>
+    ResolveUsing with Create and Pass a instance to Automapper
+    Mapper.CreateMap&lt;Author, AuthorProjectionModel&gt;()
+                        .ForMember(dest =&gt; dest.AuthorName, opt =&gt; opt.ResolveUsing( new AuthorNameResolver()));
+    <h5 style="color:Green;">Transforming object</h5>
+    var model = Mapper.Map&lt;IEnumerable&lt;Author&gt;, IEnumerable&lt;AuthorProjectionModel&gt;&gt;(_pubservices.GetAuthors()); 
+    <h5 style="color:Green;">Implementation of ValueResolver</h5>
+    public class AuthorNameResolver : ValueResolver&lt;Author, string&gt;
+    {
+        protected override string ResolveCore(Author source)
+        {
+            return source.FirstName + " " + source.LastName;
+        }
+    }
+    </pre>
+}
+@if (ViewBag.ViewType == "RESOLVE3")
+{
+    <pre class="pre1">
+    <h5 style="color:Green;">Automapper Mapping required</h5>
+    ResolveUsing with ContructedBy 
+    AutoMapper will execute this callback function instead of 
+    using reflection during the mapping operation, helpful in scenarios where the resolver might 
+    have constructor arguments or need to be constructed by an IoC container
+    Mapper.CreateMap&lt;Author, AuthorProjectionModel&gt;()
+                        .ForMember(dest =&gt; dest.AuthorName, opt =&gt; opt.ResolveUsing&lt;AuthorNameResolver&gt;().ConstructedBy(() =&gt; new AuthorNameResolver()));
+    <h5 style="color:Green;">Transforming object</h5>
+    var model = Mapper.Map&lt;IEnumerable&lt;Author&gt;, IEnumerable&lt;AuthorProjectionModel&gt;&gt;(_pubservices.GetAuthors()); 
+    <h5 style="color:Green;">Implementation of ValueResolver</h5>
+    public class AuthorNameResolver : ValueResolver&lt;Author, string&gt;
+    {
+        protected override string ResolveCore(Author source)
+        {
+            return source.FirstName + " " + source.LastName;
+        }
+    }
+    </pre>
+}

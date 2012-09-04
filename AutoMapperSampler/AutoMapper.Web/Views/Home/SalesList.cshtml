@@ -1,0 +1,111 @@
+﻿@model IEnumerable<Pubs.Web.Models.SaleModel>
+
+@{
+    //ViewBag.Title = "SalesList";
+}
+
+<h2>@ViewBag.Title</h2>
+@if (ViewBag.ViewType == "FLATTENING")
+{
+   <pre class="pre2">One of the common usages of object-object mapping is to take a complex object model and flatten it to a simpler model</pre>
+        
+}
+@if (ViewBag.ViewType == "CUSTOMTYPECONVERTER")
+{<pre class="pre2">Sometimes, you need to take complete control over the conversion of one type to another. This is typically when one type looks nothing like the other, a conversion function already exists, and you would like to go from a "looser" type to a stronger type, such as a source type of string to a destination type of Int32.</pre>
+}
+<div style="margin-bottom:5px;"> <img src="@Url.Content("~/Content/Image/Flattening.JPG")" alt="AuthorClass" />  </div>
+<table>
+    <tr>
+        <th>
+            StoreId
+        </th>
+        <th>
+            OrderNumber
+        </th>
+        <th>
+            OrderDate
+        </th>
+        <th>
+            Quantity
+        </th>
+        <th>
+            PaymentTerms
+        </th>
+        <th>
+            TitleId
+        </th>
+        <th>
+            StoreName
+        </th>
+        <th>
+            StoreCity
+        </th>
+        <th>
+            TitleName
+        </th>
+    </tr>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.StoreId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OrderNumber)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OrderDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Quantity)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PaymentTerms)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TitleId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StoreName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StoreCity)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TitleName)
+        </td>
+    </tr>
+}
+
+</table>
+@if (ViewBag.ViewType == "FLATTENING")
+{
+   
+<pre class="pre1">
+        <h5 style="color:Green;">Creating Map</h5>
+        Mapper.CreateMap&lt;Sale, SaleModel&gt;();
+        <h5 style="color:Green;">Transforming object</h5>
+        var _listSalesModel = Mapper.Map&lt;IEnumerable&lt;Sale&gt;, IEnumerable&lt;SaleModel&gt;&gt;(_pubservices.GetSales());
+</pre>
+}
+@if (ViewBag.ViewType == "CUSTOMTYPECONVERTER")
+{
+    <pre class="pre1">
+        <h5 style="color:Green;">Creating Map</h5>
+        Mapper.CreateMap&lt;Sale, SaleModel&gt;();
+        Mapper.CreateMap&lt;DateTime, string&gt;().ConvertUsing&lt;DateTimeTypeConverter&gt;();
+        <h5 style="color:Green;">Transforming object</h5>
+        var _listSalesModel = Mapper.Map&lt;IEnumerable&lt;Sale&gt;, IEnumerable&lt;SaleModel&gt;&gt;(_pubservices.GetSales());
+        <h5 style="color:Green;">Implementation of custom ITypeConverter</h5>
+        public class DateTimeTypeConverter : ITypeConverter&lt;DateTime, string&gt;
+        {
+            public string Convert(ResolutionContext context)
+            {
+                return System.Convert.ToDateTime(context.SourceValue).ToLongDateString();
+            
+            }
+        }
+    </pre>
+
+}

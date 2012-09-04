@@ -1,0 +1,87 @@
+﻿@model IEnumerable<Adventure.Web.ViewModel.PurchaseDetailModel>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table>
+    <tr>
+        <th>
+            PurchaseOrderID
+        </th>
+        <th>
+            PurchaseOrderDetailID
+        </th>
+        <th>
+            DueDate
+        </th>
+        <th>
+            OrderQty
+        </th>
+        <th>
+            ProductID
+        </th>
+        <th>
+            UnitPrice
+        </th>
+        <th>
+            LineTotal
+        </th>
+        <th>
+            ReceivedQty
+        </th>
+        <th>
+            RejectedQty
+        </th>
+        <th>
+            StockedQty
+        </th>
+        <th>
+            ModifiedDate
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.PurchaseOrderID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PurchaseOrderDetailID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DueDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OrderQty)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ProductID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UnitPrice)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LineTotal)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ReceivedQty)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RejectedQty)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StockedQty)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ModifiedDate)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+        </td>
+    </tr>
+}
+
+</table>

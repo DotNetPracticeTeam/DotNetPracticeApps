@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pubs.Web", "AutoMapper.Web\Pubs.Web.csproj", "{68CAB93C-0663-4681-BA9C-F48CC86EFB3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pubs.Tests", "AutoMapper.Tests\Pubs.Tests.csproj", "{5E7A2BFD-8308-4D5C-BCEE-02481878C493}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pubs.Data", "AutoMapper.Data\Pubs.Data.csproj", "{4E2B510B-5D45-484C-ABDA-D8F10F072C6C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pubs.Services", "AutoMapper.Services\Pubs.Services.csproj", "{FD5630B9-858F-4FF5-B413-94FD6A941DD5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{68CAB93C-0663-4681-BA9C-F48CC86EFB3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68CAB93C-0663-4681-BA9C-F48CC86EFB3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68CAB93C-0663-4681-BA9C-F48CC86EFB3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68CAB93C-0663-4681-BA9C-F48CC86EFB3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E7A2BFD-8308-4D5C-BCEE-02481878C493}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E7A2BFD-8308-4D5C-BCEE-02481878C493}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E7A2BFD-8308-4D5C-BCEE-02481878C493}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E7A2BFD-8308-4D5C-BCEE-02481878C493}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E2B510B-5D45-484C-ABDA-D8F10F072C6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E2B510B-5D45-484C-ABDA-D8F10F072C6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E2B510B-5D45-484C-ABDA-D8F10F072C6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E2B510B-5D45-484C-ABDA-D8F10F072C6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD5630B9-858F-4FF5-B413-94FD6A941DD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD5630B9-858F-4FF5-B413-94FD6A941DD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD5630B9-858F-4FF5-B413-94FD6A941DD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD5630B9-858F-4FF5-B413-94FD6A941DD5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35
+	EndGlobalSection
+EndGlobal
